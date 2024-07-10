@@ -1,5 +1,5 @@
-import React from "react";
-import { Tasks } from "../Model";
+import React, { useState } from "react";
+import { Tasks, Priority } from "../Model";
 import "./SingleTask.css";
 import CheckIcon from "@mui/icons-material/Check";
 import EditIcon from "@mui/icons-material/Edit";
@@ -13,14 +13,14 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
-import { Calendar } from "./ui/calendar";
+} from "../components/ui/dropdown-menu";
+import { Calendar } from "../components/ui/calendar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "./ui/popover";
-import { Button } from "./ui/button";
+} from "../components/ui/popover";
+import { Button } from "../components/ui/button";
 import { cn } from "../lib/utils";
 import {
   Dialog,
@@ -30,8 +30,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "./ui/dialog";
-import { Input } from "./ui/input";
+} from "../components/ui/dialog";
+import { Input } from "../components/ui/input";
 
 interface Props {
   task: Tasks;
@@ -44,13 +44,27 @@ const SingleTask = ({ task, tasks, setTasks }: Props) => {
     from: new Date(2022, 0, 20),
     to: addDays(new Date(2022, 0, 20), 20),
   });
+
+  const [priorityInput, setPriorityInput] = useState<string>("High" || "");
+
+  const handlePriorityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value as Priority;
+    setPriorityInput(value);
+    const updateTasks = tasks.map((t) =>
+      t.id === task.id ? { ...t, priority: value } : t
+    );
+    setTasks(updateTasks);
+  };
+
   return (
     <div>
       <form className="todos__single">
         {task.isCompleted ? (
           <s className="todos__single--text">{task.task}</s>
         ) : (
-          <span className="todos__single--text">{task.task}</span>
+          <span className="todos__single--text">
+            {task.task + " |Priority: " + task.priority}{" "}
+          </span>
         )}
 
         <div>
@@ -104,13 +118,12 @@ const SingleTask = ({ task, tasks, setTasks }: Props) => {
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Input
                     id="priority"
+                    value={priorityInput}
+                    onChange={handlePriorityChange}
                     className="col-span-4"
                   />
                 </div>
               </div>
-              <DialogFooter>
-                <Button type="submit">Save changes</Button>
-              </DialogFooter>
             </DialogContent>
           </Dialog>
           <DropdownMenu>
