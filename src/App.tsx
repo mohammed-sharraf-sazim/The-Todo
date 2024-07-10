@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import './App.css';
 import './index.css'
-import InputField from '../../The-Todo copy/components/InputField';
-import TodoList from '../../The-Todo copy/components/TodoList';
+import InputField from './components/InputField';
+import TodoList from './components/TodoList';
 import { Priority, Tasks } from './Model'
 
 
