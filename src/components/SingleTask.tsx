@@ -32,7 +32,6 @@ import {
   DialogTrigger,
 } from "./ui/dialog";
 import { Input } from "./ui/input";
-// import { Label } from "../components/ui/label";
 
 interface Props {
   task: Tasks;
@@ -105,7 +104,6 @@ const SingleTask = ({ task, tasks, setTasks }: Props) => {
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Input
                     id="priority"
-                    // defaultValue=""
                     className="col-span-4"
                   />
                 </div>
