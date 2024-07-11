@@ -16,7 +16,7 @@ import { Priority, Tasks } from './Model'
     e.preventDefault();
 
     if (todo) {
-      setTasks([...tasks, { id: Date.now(), task:todo, isCompleted: false, priority: Priority.High, deadline: new Date() }]);
+      setTasks([...tasks, { id: Date.now(), task:todo, isCompleted: false, priority: Priority.HIGH, deadline: new Date() }]);
       setTodo("");
     }
   };

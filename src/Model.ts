@@ -1,7 +1,7 @@
 export enum Priority {
-    High = 'High',
-    Medium = 'Medium',
-    Low = 'Low'
+    HIGH = 'High',
+    MEDIUM = 'Medium',
+    LOW = 'Low'
 }
 export interface Tasks{
     id: number,
