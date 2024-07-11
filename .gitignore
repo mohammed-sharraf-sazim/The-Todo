@@ -49,3 +49,4 @@ build/
 # Parcel-bundler
 .cache
 .parcel-cache
+node_modules
