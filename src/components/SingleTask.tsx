@@ -56,11 +56,21 @@ const SingleTask = ({ task, tasks, setTasks }: Props) => {
     setTasks(updateTasks);
   };
 
+  const handleCheck = (id : number)=> {
+    setTasks(
+      tasks.map((task)=> 
+        task.id === id ? {...task, isCompleted: !task.isCompleted} : task
+      )
+    )
+  }
+
   return (
     <div>
       <form className="todos__single">
         {task.isCompleted ? (
-          <s className="todos__single--text">{task.task}</s>
+          <s className="todos__single--text">
+            {task.task + " |Priority: " + task.priority}{" "}
+          </s>
         ) : (
           <span className="todos__single--text">
             {task.task + " |Priority: " + task.priority}{" "}
@@ -98,7 +108,7 @@ const SingleTask = ({ task, tasks, setTasks }: Props) => {
               </DialogFooter>
             </DialogContent>
           </Dialog>
-          <span className="icon">
+          <span className="icon" onClick={()=>handleCheck(task.id)}>
             <CheckIcon />
           </span>
           <Dialog>
