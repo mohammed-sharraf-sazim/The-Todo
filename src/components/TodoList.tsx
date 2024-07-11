@@ -16,7 +16,12 @@ const TodoList: React.FC<Props> = ({tasks, setTasks}) => {
       Medium: 2,
       Low: 1
     }
-    return (priorityOrder[b.priority! || 0]) - (priorityOrder[a.priority! || 0])
+    if (a.isCompleted !== b.isCompleted){
+      return a.isCompleted ? 1 : -1
+    }
+    const aPriority = priorityOrder[a.priority ?? 'High']
+    const bPriority = priorityOrder[b.priority ?? 'High']
+    return (bPriority) - (aPriority)
   })
 
   return (
