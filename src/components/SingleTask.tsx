@@ -47,11 +47,11 @@ const SingleTask = ({ task, tasks, setTasks }: Props) => {
 
   const [priorityInput, setPriorityInput] = useState<string>("High" || "");
 
-  const handlePriorityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value as Priority;
+  const handlePriorityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = event.target.value as Priority;
     setPriorityInput(value);
-    const updateTasks = tasks.map((t) =>
-      t.id === task.id ? { ...t, priority: value } : t
+    const updateTasks = tasks.map((task) =>
+      task.id === task.id ? { ...task, priority: value } : task
     );
     setTasks(updateTasks);
   };
