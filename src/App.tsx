@@ -11,6 +11,7 @@ function App() {
   const [tasks, setTasks] = useState<Tasks[]>([]);
   const [filter, setFilter] = useState<string>('all');
   const [priorityFilter , setPriorityFilter] = useState<string>('all');
+  const [dateFilter, setDateFilter] = useState<string>('all');
 
   const clearCompletedTasks = () => {
     const activeTasks = tasks.filter((task) => !task.isCompleted);
@@ -35,19 +36,34 @@ function App() {
     }
   };
 
+  const filterDeadlineTasks = (task: Tasks) => {
+    const today = new Date();
+    const taskDate = new Date(task.deadline?.to);
+    
+    if (dateFilter === 'today') {
+      return taskDate.toDateString() === today.toDateString();
+    } else if (dateFilter === 'upcoming') {
+      return taskDate > today;
+    } else if (dateFilter === 'overdue') {
+      return taskDate < today;
+    }
+    return true;
+  } 
   const filteredTasks = tasks.filter(task => {
+    const dateCondition = filterDeadlineTasks(task);
+
     if (filter === 'all' && priorityFilter === 'all') {
-      return true;
+      return dateCondition;
     } else if (filter === 'completed' && priorityFilter === 'all') {
-      return task.isCompleted;
+      return task.isCompleted && dateCondition;
     } else if (filter === 'active' && priorityFilter === 'all') {
-      return !task.isCompleted;
+      return !task.isCompleted && dateCondition;
     } else if (filter === 'all' && priorityFilter !== 'all') {
-      return task.priority === priorityFilter as Priority; // Cast to Priority
+      return task.priority === priorityFilter && dateCondition;
     } else if (filter === 'completed' && priorityFilter !== 'all') {
-      return task.isCompleted && task.priority === priorityFilter as Priority;
+      return task.isCompleted && task.priority === priorityFilter  && dateCondition;
     } else if (filter === 'active' && priorityFilter !== 'all') {
-      return !task.isCompleted && task.priority === priorityFilter as Priority;
+      return !task.isCompleted && task.priority === priorityFilter && dateCondition;
     }
     return false;
   });
@@ -62,7 +78,7 @@ function App() {
         >
           Clear Completed Tasks
         </button>
-        <FilterTasks filter={filter} setFilter={setFilter} priorityFilter={priorityFilter as Priority} setPriorityFilter={setPriorityFilter} />
+        <FilterTasks filter={filter} setFilter={setFilter} priorityFilter={priorityFilter} setPriorityFilter={setPriorityFilter} dateFilter={dateFilter} setDateFilter={setDateFilter} />
       </div>
       <InputField todo={todo} setTodo={setTodo} handleAdd={handleAdd} />
       <TodoList tasks={filteredTasks} setTasks={setTasks} />
