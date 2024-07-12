@@ -37,9 +37,27 @@ interface Props {
   task: Tasks;
   tasks: Tasks[];
   setTasks: React.Dispatch<React.SetStateAction<Tasks[]>>;
+  history: Tasks[][];
+  future: Tasks[][];
+  setHistory: React.Dispatch<React.SetStateAction<Tasks[][]>>;
+  setFuture: React.Dispatch<React.SetStateAction<Tasks[][]>>;
+  updateHistory: (newTasks: Tasks[]) => void;
+  undo: () => void;
+  redo: () => void;
 }
 
-const SingleTask = ({ task, tasks, setTasks }: Props) => {
+const SingleTask = ({
+  task,
+  tasks,
+  setTasks,
+  history,
+  future,
+  setHistory,
+  setFuture,
+  updateHistory,
+  undo,
+  redo,
+}: Props) => {
   const [date, setDate] = useState<DateRange | undefined>(task.deadline);
 
   const [priorityInput, setPriorityInput] = useState<string>("High" || "");
@@ -51,6 +69,7 @@ const SingleTask = ({ task, tasks, setTasks }: Props) => {
       newTask.id === task.id ? { ...newTask, priority: value } : newTask
     );
     setTasks(updateTasks);
+    updateHistory(updateTasks);
   };
 
   const handleCheck = (id: number) => {
@@ -59,6 +78,7 @@ const SingleTask = ({ task, tasks, setTasks }: Props) => {
         task.id === id ? { ...task, isCompleted: !task.isCompleted } : task
       )
     );
+    updateHistory(tasks)
   };
   const handleDateSelect = (range: DateRange | undefined) => {
     setDate(range);
@@ -68,6 +88,7 @@ const SingleTask = ({ task, tasks, setTasks }: Props) => {
         : deadlineTask
     );
     setTasks(updateTasks);
+    updateHistory(updateTasks);
   };
 
   return (
