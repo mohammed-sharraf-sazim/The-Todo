@@ -40,7 +40,7 @@ interface Props {
 }
 
 const SingleTask = ({ task, tasks, setTasks }: Props) => {
-  const [date, setDate] = React.useState<DateRange | undefined>(task.deadline);
+  const [date, setDate] = useState<DateRange | undefined>(task.deadline);
 
   const [priorityInput, setPriorityInput] = useState<string>("High" || "");
 

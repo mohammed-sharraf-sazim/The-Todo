@@ -8,5 +8,5 @@ export interface Tasks{
     task: string,
     isCompleted: boolean,
     priority?: Priority,
-    deadline?: { from: Date | undefined; to: Date | undefined };
+    deadline?: { from: Date ; to: Date };
 }
