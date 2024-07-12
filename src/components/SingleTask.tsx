@@ -32,6 +32,7 @@ import {
   DialogTrigger,
 } from "../components/ui/dialog";
 import { Input } from "../components/ui/input";
+import { log } from "console";
 
 interface Props {
   task: Tasks;
@@ -50,8 +51,8 @@ const SingleTask = ({ task, tasks, setTasks }: Props) => {
   const handlePriorityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value as Priority;
     setPriorityInput(value);
-    const updateTasks = tasks.map((task) =>
-      task.id === task.id ? { ...task, priority: value } : task
+    const updateTasks = tasks.map((newTask) =>
+      newTask.id === task.id ? { ...newTask, priority: value } : newTask
     );
     setTasks(updateTasks);
   };
