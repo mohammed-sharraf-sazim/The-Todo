@@ -43,11 +43,11 @@ function App() {
     } else if (filter === 'active' && priorityFilter === 'all') {
       return !task.isCompleted;
     } else if (filter === 'all' && priorityFilter !== 'all') {
-      return task.priority === priorityFilter as Priority; // Cast to Priority
+      return task.priority === priorityFilter 
     } else if (filter === 'completed' && priorityFilter !== 'all') {
-      return task.isCompleted && task.priority === priorityFilter as Priority;
+      return task.isCompleted && task.priority === priorityFilter ;
     } else if (filter === 'active' && priorityFilter !== 'all') {
-      return !task.isCompleted && task.priority === priorityFilter as Priority;
+      return !task.isCompleted && task.priority === priorityFilter ;
     }
     return false;
   });
