@@ -6,7 +6,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import { addDays, format } from "date-fns";
+import {  format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { DateRange } from "react-day-picker";
 import {
@@ -40,10 +40,7 @@ interface Props {
 }
 
 const SingleTask = ({ task, tasks, setTasks }: Props) => {
-  const [date, setDate] = React.useState<DateRange | undefined>({
-    from: new Date(2022, 0, 20),
-    to: addDays(new Date(2022, 0, 20), 20),
-  });
+  const [date, setDate] = useState<DateRange | undefined>(task.deadline);
 
   const [priorityInput, setPriorityInput] = useState<string>("High" || "");
 
@@ -63,17 +60,36 @@ const SingleTask = ({ task, tasks, setTasks }: Props) => {
       )
     )
   }
+  const handleDateSelect = (range: DateRange | undefined) => {
+    setDate(range);
+    const updateTasks = tasks.map((deadlineTask) =>
+      deadlineTask.id === task.id ? { ...deadlineTask, deadline: range } : deadlineTask
+    );
+    setTasks(updateTasks);
+  };
 
   return (
     <div>
       <form className="todos__single">
-        {task.isCompleted ? (
+      {task.isCompleted ? (
           <s className="todos__single--text">
-            {task.task + " |Priority: " + task.priority}{" "}
+            {task.task +
+              " | Priority: " +
+              task.priority +
+              " | Deadline: " +
+              (task.deadline?.from ? format(task.deadline.from, "LLL dd, y") : "Not Set") +
+              " - " +
+              (task.deadline?.to ? format(task.deadline.to, "LLL dd, y") : "Not Set")}
           </s>
         ) : (
           <span className="todos__single--text">
-            {task.task + " |Priority: " + task.priority}{" "}
+            {task.task +
+              " | Priority: " +
+              task.priority +
+              " | Deadline: " +
+              (task.deadline?.from ? format(task.deadline.from, "LLL dd, y") : "Not Set") +
+              " - " +
+              (task.deadline?.to ? format(task.deadline.to, "LLL dd, y") : "Not Set")}
           </span>
         )}
 
@@ -174,7 +190,7 @@ const SingleTask = ({ task, tasks, setTasks }: Props) => {
                     mode="range"
                     defaultMonth={date?.from}
                     selected={date}
-                    onSelect={setDate}
+                    onSelect={handleDateSelect}
                     numberOfMonths={2}
                   />
                 </PopoverContent>
