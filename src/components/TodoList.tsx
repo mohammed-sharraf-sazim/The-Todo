@@ -10,18 +10,18 @@ interface Props {
 
 const TodoList: React.FC<Props> = ({tasks, setTasks}) => {
 
-  const sortedTasks = tasks.sort((a,b)=>{
+  const sortedTasks = tasks.sort((firstNum,secondNum)=>{
     const priorityOrder = {
       High: 3,
       Medium: 2,
       Low: 1
     }
-    if (a.isCompleted !== b.isCompleted){
-      return a.isCompleted ? 1 : -1
+    if (firstNum.isCompleted !== secondNum.isCompleted){
+      return firstNum.isCompleted ? 1 : -1
     }
-    const aPriority = priorityOrder[a.priority ?? 'High']
-    const bPriority = priorityOrder[b.priority ?? 'High']
-    return (bPriority) - (aPriority)
+    const firstPriority = priorityOrder[firstNum.priority ?? 'High']
+    const secondPriority = priorityOrder[secondNum.priority ?? 'High']
+    return (secondPriority) - (firstPriority)
   })
 
   return (
