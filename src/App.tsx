@@ -28,7 +28,7 @@ function App() {
           task: todo,
           isCompleted: false,
           priority: Priority.HIGH,
-          deadline: new Date(),
+          deadline: { from: new Date(), to: new Date()},
         },
       ]);
       setTodo("");
