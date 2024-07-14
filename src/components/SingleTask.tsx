@@ -1,5 +1,5 @@
-import React from "react";
-import { Tasks } from "../Model";
+import React, { useState } from "react";
+import { Tasks, Priority } from "../Model";
 import "./SingleTask.css";
 import CheckIcon from "@mui/icons-material/Check";
 import EditIcon from "@mui/icons-material/Edit";
@@ -15,11 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Calendar } from "./ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "./ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Button } from "./ui/button";
 import { cn } from "../lib/utils";
 import {
@@ -44,15 +40,30 @@ const SingleTask = ({ task, tasks, setTasks }: Props) => {
     from: new Date(2022, 0, 20),
     to: addDays(new Date(2022, 0, 20), 20),
   });
+
+  const [priorityInput, setPriorityInput] = useState<string>("High" || "");
+
+  const handlePriorityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value as Priority;
+    setPriorityInput(value);
+    const updateTasks = tasks.map((t) =>
+      t.id === task.id ? { ...t, priority: value } : t
+    );
+    setTasks(updateTasks);
+  };
+
   return (
     <div>
       <form className="todos__single">
-        {task.isCompleted ? (
-          <s className="todos__single--text">{task.task}</s>
+      {task.isCompleted ? (
+          <s className="todos__single--text">
+            {task.task + " |Priority: " + task.priority}{" "}
+          </s>
         ) : (
-          <span className="todos__single--text">{task.task}</span>
+          <span className="todos__single--text">
+            {task.task + " |Priority: " + task.priority}{" "}
+          </span>
         )}
-
         <div>
           <span className="icon">
             <EditIcon />
@@ -105,12 +116,11 @@ const SingleTask = ({ task, tasks, setTasks }: Props) => {
                   <Input
                     id="priority"
                     className="col-span-4"
+                    value={priorityInput}
+                    onChange={handlePriorityChange}
                   />
                 </div>
               </div>
-              <DialogFooter>
-                <Button type="submit">Save changes</Button>
-              </DialogFooter>
             </DialogContent>
           </Dialog>
           <DropdownMenu>
