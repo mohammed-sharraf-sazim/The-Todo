@@ -76,6 +76,7 @@ const SingleTask = ({ task, tasks, setTasks }: Props) => {
             {task.task + " |Priority: " + task.priority}{" "}
           </span>
         )}
+
         <div>
           <span className="icon">
             <EditIcon />
@@ -130,8 +131,6 @@ const SingleTask = ({ task, tasks, setTasks }: Props) => {
                     value={priorityInput}
                     onChange={handlePriorityChange}
                     className="col-span-4"
-                    value={priorityInput}
-                    onChange={handlePriorityChange}
                   />
                 </div>
               </div>
