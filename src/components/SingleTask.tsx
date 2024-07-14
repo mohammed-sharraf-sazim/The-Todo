@@ -13,10 +13,14 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
-import { Calendar } from "./ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { Button } from "./ui/button";
+} from "../components/ui/dropdown-menu";
+import { Calendar } from "../components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "../components/ui/popover";
+import { Button } from "../components/ui/button";
 import { cn } from "../lib/utils";
 import {
   Dialog,
@@ -26,8 +30,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "./ui/dialog";
-import { Input } from "./ui/input";
+} from "../components/ui/dialog";
+import { Input } from "../components/ui/input";
 
 interface Props {
   task: Tasks;
@@ -52,10 +56,18 @@ const SingleTask = ({ task, tasks, setTasks }: Props) => {
     setTasks(updateTasks);
   };
 
+  const handleCheck = (id : number)=> {
+    setTasks(
+      tasks.map((task)=> 
+        task.id === id ? {...task, isCompleted: !task.isCompleted} : task
+      )
+    )
+  }
+
   return (
     <div>
       <form className="todos__single">
-      {task.isCompleted ? (
+        {task.isCompleted ? (
           <s className="todos__single--text">
             {task.task + " |Priority: " + task.priority}{" "}
           </s>
@@ -95,7 +107,7 @@ const SingleTask = ({ task, tasks, setTasks }: Props) => {
               </DialogFooter>
             </DialogContent>
           </Dialog>
-          <span className="icon">
+          <span className="icon" onClick={()=>handleCheck(task.id)}>
             <CheckIcon />
           </span>
           <Dialog>
@@ -115,6 +127,8 @@ const SingleTask = ({ task, tasks, setTasks }: Props) => {
                 <div className="grid grid-cols-4 items-center gap-4">
                   <Input
                     id="priority"
+                    value={priorityInput}
+                    onChange={handlePriorityChange}
                     className="col-span-4"
                     value={priorityInput}
                     onChange={handlePriorityChange}
