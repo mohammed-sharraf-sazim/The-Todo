@@ -59,8 +59,9 @@ const SingleTask = ({
   redo,
 }: Props) => {
   const [date, setDate] = useState<DateRange | undefined>(task.deadline);
-
   const [priorityInput, setPriorityInput] = useState<string>("High" || "");
+  const [edit, setEdit] = useState<boolean>(false);
+  const [editTask, setEditTask] = useState<string>(task.task);
 
   const handlePriorityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value as Priority;
@@ -78,8 +79,9 @@ const SingleTask = ({
         task.id === id ? { ...task, isCompleted: !task.isCompleted } : task
       )
     );
-    updateHistory(tasks)
+    updateHistory(tasks);
   };
+
   const handleDateSelect = (range: DateRange | undefined) => {
     setDate(range);
     const updateTasks = tasks.map((deadlineTask) =>
@@ -91,10 +93,31 @@ const SingleTask = ({
     updateHistory(updateTasks);
   };
 
+  const handleDelete = (id: number) => {
+    setTasks(tasks.filter((task) => task.id !== id));
+  };
+
+  const handleEdit = (event: React.FormEvent, id: number) => {
+    event.preventDefault();
+    setTasks(
+      tasks.map((task) => (task.id === id ? { ...task, task: editTask } : task))
+    );
+    setEdit(false);
+    updateHistory(tasks);
+  };
+
   return (
     <div>
-      <form className="todos__single">
-        {task.isCompleted ? (
+      <form className="todos__single" onSubmit={(e) => handleEdit(e, task.id)}>
+        {edit ? (
+          <input
+            value={editTask}
+            onChange={(event) => {
+              setEditTask(event.target.value);
+            }}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        ) : task.isCompleted ? (
           <s className="todos__single--text">
             {task.task}
             <span className="block text-gray-600 text-base">
@@ -133,7 +156,14 @@ const SingleTask = ({
         )}
 
         <div>
-          <span className="icon">
+          <span
+            className="icon"
+            onClick={() => {
+              if (!edit && !task.isCompleted) {
+                setEdit(!edit);
+              }
+            }}
+          >
             <EditIcon />
           </span>
           <Dialog>
@@ -146,20 +176,13 @@ const SingleTask = ({
               <DialogHeader>
                 <DialogTitle>Confirm Delete</DialogTitle>
                 <DialogDescription>
-                  Type DELETE to delete the task permanently.
+                  Are you sure you want to delete the task permanently?
                 </DialogDescription>
               </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Input
-                    id="name"
-                    defaultValue="type DELETE"
-                    className="col-span-4"
-                  />
-                </div>
-              </div>
               <DialogFooter>
-                <Button type="submit">Save changes</Button>
+                <Button type="submit" onClick={() => handleDelete(task.id)}>
+                  CONFIRM
+                </Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
