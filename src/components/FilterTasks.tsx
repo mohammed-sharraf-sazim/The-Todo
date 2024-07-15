@@ -74,7 +74,7 @@ const FilterTasks: React.FC<Props> = ({
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            <SelectLabel>State of Task</SelectLabel>
+            <SelectLabel>Priority</SelectLabel>
             <div className="flex flex-col space-y-2">
               <button
                 className={`bg-dark-gray-100 px-4 py-2 rounded-md ${
