@@ -6,10 +6,26 @@ import "./TodoList.css";
 interface Props {
   tasks: Tasks[];
   setTasks: React.Dispatch<React.SetStateAction<Tasks[]>>;
+  history: Tasks[][];
+  future: Tasks[][];
+  setHistory: React.Dispatch<React.SetStateAction<Tasks[][]>>;
+  setFuture: React.Dispatch<React.SetStateAction<Tasks[][]>>;
+  undo: () => void;
+  redo: () => void;
+  updateHistory: (newTasks: Tasks[]) => void;
 }
 
-const TodoList: React.FC<Props> = ({ tasks, setTasks }) => {
-  
+const TodoList: React.FC<Props> = ({
+  tasks,
+  setTasks,
+  undo,
+  redo,
+  updateHistory,
+  history,
+  future,
+  setHistory,
+  setFuture,
+}) => {
   const sortedTasks = tasks.sort((a, b) => {
     const priorityOrder = {
       High: 3,
@@ -32,6 +48,13 @@ const TodoList: React.FC<Props> = ({ tasks, setTasks }) => {
           key={task.id}
           tasks={tasks}
           setTasks={setTasks}
+          updateHistory={updateHistory}
+          undo={undo}
+          redo={redo}
+          history={history}
+          setHistory={setHistory}
+          future={future}
+          setFuture={setFuture}
         />
       ))}
     </div>
