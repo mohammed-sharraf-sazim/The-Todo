@@ -6,7 +6,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import {  format } from "date-fns";
+import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { DateRange } from "react-day-picker";
 import {
@@ -53,17 +53,19 @@ const SingleTask = ({ task, tasks, setTasks }: Props) => {
     setTasks(updateTasks);
   };
 
-  const handleCheck = (id : number)=> {
+  const handleCheck = (id: number) => {
     setTasks(
-      tasks.map((task)=> 
-        task.id === id ? {...task, isCompleted: !task.isCompleted} : task
+      tasks.map((task) =>
+        task.id === id ? { ...task, isCompleted: !task.isCompleted } : task
       )
-    )
-  }
+    );
+  };
   const handleDateSelect = (range: DateRange | undefined) => {
     setDate(range);
     const updateTasks = tasks.map((deadlineTask) =>
-      deadlineTask.id === task.id ? { ...deadlineTask, deadline: range } : deadlineTask
+      deadlineTask.id === task.id
+        ? { ...deadlineTask, deadline: range }
+        : deadlineTask
     );
     setTasks(updateTasks);
   };
@@ -73,23 +75,39 @@ const SingleTask = ({ task, tasks, setTasks }: Props) => {
       <form className="todos__single">
       {task.isCompleted ? (
           <s className="todos__single--text">
-            {task.task +
-              " | Priority: " +
-              task.priority +
-              " | Deadline: " +
-              (task.deadline?.from ? format(task.deadline.from, "LLL dd, y") : "Not Set") +
-              " - " +
-              (task.deadline?.to ? format(task.deadline.to, "LLL dd, y") : "Not Set")}
+            {task.task}
+            <span className="block text-gray-600 text-base">
+              {" "}
+              | Priority: {task.priority}
+            </span>
+            <span className="block text-blue-700 text-base">
+              {" | Deadline: " +
+                (task.deadline?.from
+                  ? format(task.deadline.from, "LLL dd, y")
+                  : "Not Set") +
+                " - " +
+                (task.deadline?.to
+                  ? format(task.deadline.to, "LLL dd, y")
+                  : "Not Set")}
+            </span>
           </s>
         ) : (
           <span className="todos__single--text">
-            {task.task +
-              " | Priority: " +
-              task.priority +
-              " | Deadline: " +
-              (task.deadline?.from ? format(task.deadline.from, "LLL dd, y") : "Not Set") +
-              " - " +
-              (task.deadline?.to ? format(task.deadline.to, "LLL dd, y") : "Not Set")}
+            {task.task}
+            <span className="block text-gray-600 text-base">
+              {" "}
+              | Priority: {task.priority}
+            </span>
+            <span className="block text-blue-700 text-base">
+              {" | Deadline: " +
+                (task.deadline?.from
+                  ? format(task.deadline.from, "LLL dd, y")
+                  : "Not Set") +
+                " - " +
+                (task.deadline?.to
+                  ? format(task.deadline.to, "LLL dd, y")
+                  : "Not Set")}
+            </span>
           </span>
         )}
 
@@ -124,7 +142,7 @@ const SingleTask = ({ task, tasks, setTasks }: Props) => {
               </DialogFooter>
             </DialogContent>
           </Dialog>
-          <span className="icon" onClick={()=>handleCheck(task.id)}>
+          <span className="icon" onClick={() => handleCheck(task.id)}>
             <CheckIcon />
           </span>
           <Dialog>
