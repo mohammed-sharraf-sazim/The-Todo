@@ -9,6 +9,7 @@ interface Props {
 }
 
 const TodoList: React.FC<Props> = ({ tasks, setTasks }) => {
+  
   const sortedTasks = tasks.sort((a, b) => {
     const priorityOrder = {
       High: 3,

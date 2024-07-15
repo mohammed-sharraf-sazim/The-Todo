@@ -4,6 +4,7 @@ import "./index.css";
 import InputField from "./components/InputField";
 import TodoList from "./components/TodoList";
 import FilterTasks from "./components/FilterTasks";
+import FilteredTasks from "./components/FilteredTasks";
 import { Priority, Tasks } from "./Model";
 
 function App() {
@@ -11,6 +12,8 @@ function App() {
   const [tasks, setTasks] = useState<Tasks[]>([]);
   const [filter, setFilter] = useState<string>('all');
   const [priorityFilter , setPriorityFilter] = useState<string>('all');
+  const [dateFilter, setDateFilter] = useState<string>('all');
+  const [filteredTasks, setFilteredTasks] = useState<Tasks[]>([]);
 
   const clearCompletedTasks = () => {
     const activeTasks = tasks.filter((task) => !task.isCompleted);
@@ -35,23 +38,6 @@ function App() {
     }
   };
 
-  const filteredTasks = tasks.filter(task => {
-    if (filter === 'all' && priorityFilter === 'all') {
-      return true;
-    } else if (filter === 'completed' && priorityFilter === 'all') {
-      return task.isCompleted;
-    } else if (filter === 'active' && priorityFilter === 'all') {
-      return !task.isCompleted;
-    } else if (filter === 'all' && priorityFilter !== 'all') {
-      return task.priority === priorityFilter as Priority; // Cast to Priority
-    } else if (filter === 'completed' && priorityFilter !== 'all') {
-      return task.isCompleted && task.priority === priorityFilter as Priority;
-    } else if (filter === 'active' && priorityFilter !== 'all') {
-      return !task.isCompleted && task.priority === priorityFilter as Priority;
-    }
-    return false;
-  });
-  
   return (
     <div className="App">
       <h1 className="heading">Plan Your Thoughts! 😀 </h1>
@@ -62,9 +48,10 @@ function App() {
         >
           Clear Completed Tasks
         </button>
-        <FilterTasks filter={filter} setFilter={setFilter} priorityFilter={priorityFilter as Priority} setPriorityFilter={setPriorityFilter} />
+        <FilterTasks filter={filter} setFilter={setFilter} priorityFilter={priorityFilter} setPriorityFilter={setPriorityFilter} dateFilter={dateFilter} setDateFilter={setDateFilter} />
       </div>
       <InputField todo={todo} setTodo={setTodo} handleAdd={handleAdd} />
+      <FilteredTasks tasks={tasks} filter={filter} priorityFilter={priorityFilter} dateFilter={dateFilter} setFilteredTasks={setFilteredTasks} />
       <TodoList tasks={filteredTasks} setTasks={setTasks} />
     </div>
   );
