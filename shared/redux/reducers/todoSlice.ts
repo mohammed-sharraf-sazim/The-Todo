@@ -52,8 +52,6 @@ const todosSlice = createSlice({
       if (todo) {
         todo.isCompleted = !todo.isCompleted;
       }
-      console.log(todo?.isCompleted);
-      
     },
   },
 });
