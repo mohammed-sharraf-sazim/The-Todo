@@ -16,7 +16,7 @@ const TodoList: React.FC = () => {
   }, []);
 
   if (!isClient) {
-    return null; 
+    return null;
   }
 
   const sortedTodos = [...todos].sort((firstNumber, secondNumber) => Number(firstNumber.isCompleted) - Number(secondNumber.isCompleted));
