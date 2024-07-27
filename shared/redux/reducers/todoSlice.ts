@@ -51,6 +51,7 @@ const todosSlice = createSlice({
       const todo = state.todos.find(task => task.id === action.payload);
       if (todo) {
         todo.isCompleted = !todo.isCompleted;
+        saveTodosToLocalStorage(state.todos);
       }
     },
   },
