@@ -67,7 +67,7 @@ const TodoDetailsPage = () => {
   }, [todo]);
 
   return (
-    <div className="p-8">
+    <div className="p-10">
       <Link href="/todo" legacyBehavior>
         <a className="text-blue-500 mb-4 inline-block">Back</a>
       </Link>

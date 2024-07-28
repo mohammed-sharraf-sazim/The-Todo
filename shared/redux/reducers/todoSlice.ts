@@ -5,6 +5,9 @@ interface TodosState {
   todos: Todo[];
   history: Todo[][];
   future: Todo[][];
+  statusFilter: 'all' | 'active' | 'completed';
+  priorityFilter: 'all' | 'High' | 'Medium' | 'Low' | 'No Priority';
+  dueDateFilter: 'all' | 'overdue' | 'today' | 'upcoming';
 }
 
 const TODOS_LOCAL_STORAGE_KEY = "todos";
@@ -30,6 +33,9 @@ const initialState: TodosState = {
   todos: loadTodosFromLocalStorage(),
   history: [],
   future: [],
+  statusFilter: 'all',
+  priorityFilter: 'all',
+  dueDateFilter: 'all',
 };
 
 const todosSlice = createSlice({
@@ -113,6 +119,15 @@ const todosSlice = createSlice({
         saveTodosToLocalStorage(state.todos);
       }
     },
+    setStatusFilter: (state, action: PayloadAction<'all' | 'active' | 'completed'>) => {
+      state.statusFilter = action.payload;
+    },
+    setPriorityFilter: (state, action: PayloadAction<'all' | 'High' | 'Medium' | 'Low' | 'No Priority'>) => {
+      state.priorityFilter = action.payload;
+    },
+    setDueDateFilter: (state, action: PayloadAction<'all' | 'overdue' | 'today' | 'upcoming'>) => {
+      state.dueDateFilter = action.payload;
+    },
   },
 });
 
@@ -125,6 +140,9 @@ export const {
   setTodoPriority,
   setTodoDeadline,
   undo,
-  redo
+  redo,
+  setStatusFilter,
+  setPriorityFilter,
+  setDueDateFilter
 } = todosSlice.actions;
 export default todosSlice.reducer;
