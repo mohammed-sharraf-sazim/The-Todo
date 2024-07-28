@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/shared/redux/store";
-import { Todo } from "@/modules/todo/models";
-import { updateTodo, deleteTodo } from "@/shared/redux/reducers/todoSlice";
+import { Todo, Priority } from "@/modules/todo/models";
+import { updateTodo, deleteTodo, setTodoPriority } from "@/shared/redux/reducers/todoSlice";
 import Link from "next/link";
 import {
   Dialog,
@@ -26,9 +26,15 @@ const TodoDetailsPage = () => {
   const dispatch = useDispatch();
 
   const [task, setTask] = useState(todo?.task || "");
+  const [priority, setPriority] = useState<"Low" | "Medium" | "High" | "No Priority">(todo?.priority || Priority.NOT_SET);
+  const [deadline, setDeadline] = useState(todo?.deadline ? new Date(todo.deadline).toISOString().split("T")[0] : "");
+
+
   useEffect(() => {
     if (todo) {
       setTask(todo.task);
+      setPriority(todo.priority);
+      setDeadline(todo.deadline ? new Date(todo.deadline).toISOString().split("T")[0] : "");
     }
   }, [todo]);
 
@@ -38,7 +44,7 @@ const TodoDetailsPage = () => {
 
   const handleUpdateTask = () => {
     if (todo) {
-      const updatedTodo: Todo = { ...todo, task };
+      const updatedTodo: Todo = { ...todo, task, priority,  deadline: deadline ? new Date(deadline) : null };
       dispatch(updateTodo(updatedTodo));
     }
   };
@@ -77,6 +83,28 @@ const TodoDetailsPage = () => {
         <span className={todo.isCompleted ? ' text-gray-500' : ''}>
           {todo.isCompleted ? "Completed" : "Not Completed"}
         </span>
+      </div>
+      <div className="mb-4">
+        <label className="block text-lg font-medium text-gray-900">Priority:</label>
+        <select
+          value={priority}
+          onChange={(e) => setPriority(e.target.value as "Low" | "Medium" | "High" | "No Priority")}
+          className="border p-2 w-full"
+        >
+          <option value={Priority.NOT_SET}>No Priority</option>
+          <option value={Priority.LOW}>Low</option>
+          <option value={Priority.MEDIUM}>Medium</option>
+          <option value={Priority.HIGH}>High</option>
+        </select>
+      </div>
+      <div className="mb-4">
+        <label className="block text-lg font-medium text-gray-900">Deadline:</label>
+        <input
+          type="date"
+          value={deadline}
+          onChange={(e) => setDeadline(e.target.value )}
+          className="border p-2 w-full"
+        />
       </div>
       <button onClick={handleUpdateTask} className="bg-blue-500 text-white p-2">
         Update

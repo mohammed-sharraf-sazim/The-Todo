@@ -29,7 +29,7 @@ const TodoForm: React.FC = () => {
       id: Date.now(),
       task: values.task,
       isCompleted: false,
-      priority: "No",
+      priority: "No Priority",
       deadline: null,
     });
     if (result.success) {

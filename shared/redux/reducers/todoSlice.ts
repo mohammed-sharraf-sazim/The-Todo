@@ -57,8 +57,22 @@ const todosSlice = createSlice({
     clearCompletedTask: (state) => {
       state.todos = state.todos.filter((todo) => !todo.isCompleted)
     },
+    setTodoPriority: (state, action: PayloadAction<{ id: number; priority: Todo['priority'] }>) => {
+      const index = state.todos.findIndex((todo) => todo.id === action.payload.id);
+      if (index !== -1) {
+        state.todos[index].priority = action.payload.priority;
+        saveTodosToLocalStorage(state.todos);
+      }
+    },
+    setTodoDeadline: (state, action: PayloadAction<{ id: number; deadline: Date | null }>) => {
+      const index = state.todos.findIndex((todo) => todo.id === action.payload.id);
+      if (index !== -1) {
+        state.todos[index].deadline = action.payload.deadline;
+        saveTodosToLocalStorage(state.todos);
+      }
+    },
   },
 });
 
-export const { addTodo, updateTodo, deleteTodo, toggleTodoCompletion, clearCompletedTask } = todosSlice.actions;
+export const { addTodo, updateTodo, deleteTodo, toggleTodoCompletion, clearCompletedTask, setTodoPriority, setTodoDeadline } = todosSlice.actions;
 export default todosSlice.reducer;
