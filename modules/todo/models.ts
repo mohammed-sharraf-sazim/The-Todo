@@ -7,7 +7,7 @@ export const TodoSchema = z.object({
   id: z.number(),
   task: z.string().min(1, { message: "Task cannot be empty" }).regex(/.*\S.*/, { message: "Task cannot be only whitespace" }),
   isCompleted: z.boolean(),
-  priority: z.enum(['Low', 'Medium', 'High', 'No']),
+  priority: z.enum(['Low', 'Medium', 'High', 'No Priority']),
   deadline: z.date().nullable().refine(date => date === null || (date >= startDate && date <= endDate), {
     message: `Deadline must be between ${startDate.toDateString()} and ${endDate.toDateString()}`,
   }),
@@ -19,5 +19,5 @@ export const Priority = {
   LOW: 'Low',
   MEDIUM: 'Medium',
   HIGH: 'High',
-  NOT_SET: 'No'
+  NOT_SET: 'No Priority'
 } as const;
