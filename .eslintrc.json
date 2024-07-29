@@ -1,4 +1,7 @@
 {
   "extends": "next/core-web-vitals",
-  "no-console": "warn"
+  "rules": {
+    "no-console": "warn"
+  }
 }
+
