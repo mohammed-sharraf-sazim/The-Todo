@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { FormItem, Form, FormField, FormLabel, FormMessage } from "../../../shared/components/ui/form";
-import { Button } from "../../../shared/components/ui/button";
-import { Input } from "../../../shared/components/ui/input";
+import { FormItem, Form, FormField, FormLabel, FormMessage } from "@/shared/components/ui/form";
+import { Button } from "@/shared/components/ui/button";
+import { Input } from "@/shared/components/ui/input";
 import { useAppDispatch } from "@/shared/redux/hooks";
 import { TodoSchema } from "../models";
 import { addTodo } from "@/shared/redux/reducers/todoSlice";
