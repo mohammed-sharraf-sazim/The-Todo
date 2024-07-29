@@ -15,6 +15,8 @@ import {
   DialogTrigger,
 } from "@/shared/components/ui/dialog";
 import { Button } from "@/shared/components/ui/button";
+import { Checkbox } from "@/shared/components/ui/checkbox";
+import { toggleTodoCompletion } from "@/shared/redux/reducers/todoSlice";
 
 const TodoDetailsPage = () => {
   const router = useRouter();
@@ -48,19 +50,34 @@ const TodoDetailsPage = () => {
     }
   };
 
+  const handleToggleCompletion = () => {
+    dispatch(toggleTodoCompletion(todo.id));
+  };
+
   return (
     <div className="p-8">
       <Link href="/todo" legacyBehavior>
         <a className="text-blue-500 mb-4 inline-block">Back</a>
       </Link>
       <h1 className="text-3xl font-bold mb-4">Todo Details</h1>
-      <p>Description of the task: </p>
+      <label className="block text-lg font-medium text-gray-900">Description of the task:</label>
       <input
         type="text"
         value={task}
         onChange={(e) => setTask(e.target.value)}
         className="border p-2 mb-4 w-full"
       />
+       <div className="flex items-center space-x-2 mb-4">
+        <label className="block text-lg font-medium text-gray-900">Task Status:</label>
+        <Checkbox
+          id={`todo-${todo.id}`}
+          checked={todo.isCompleted}
+          onCheckedChange={handleToggleCompletion}
+        />
+        <span className={todo.isCompleted ? ' text-gray-500' : ''}>
+          {todo.isCompleted ? "Completed" : "Not Completed"}
+        </span>
+      </div>
       <button onClick={handleUpdateTask} className="bg-blue-500 text-white p-2">
         Update
       </button>

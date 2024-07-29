@@ -47,8 +47,15 @@ const todosSlice = createSlice({
       state.todos = state.todos.filter(todo => todo.id !== action.payload);
       saveTodosToLocalStorage(state.todos);
     },
+    toggleTodoCompletion: (state, action: PayloadAction<number>) => {
+      const todo = state.todos.find(task => task.id === action.payload);
+      if (todo) {
+        todo.isCompleted = !todo.isCompleted;
+        saveTodosToLocalStorage(state.todos);
+      }
+    },
   },
 });
 
-export const { addTodo, updateTodo, deleteTodo } = todosSlice.actions;
+export const { addTodo, updateTodo, deleteTodo, toggleTodoCompletion } = todosSlice.actions;
 export default todosSlice.reducer;
