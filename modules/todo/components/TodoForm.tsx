@@ -7,14 +7,19 @@ import {
 } from "@/shared/components/ui/form";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
-import { useAppDispatch } from "@/shared/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/shared/redux/hooks";
 import { TodoSchema } from "../models";
 import { addTodo } from "@/shared/redux/reducers/todoSlice";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { clearCompletedTask } from "@/shared/redux/reducers/todoSlice";
+import {
+  clearCompletedTask,
+  undo,
+  redo,
+} from "@/shared/redux/reducers/todoSlice";
 
 const TodoForm: React.FC = () => {
+  const todos = useAppSelector((state) => state.todos.todos);
   const dispatch = useAppDispatch();
  const [error, setError] = useState<string | null>(null);
   const form = useForm({
@@ -44,17 +49,26 @@ const TodoForm: React.FC = () => {
     dispatch(clearCompletedTask());
   };
 
+  const undoTodo = useAppSelector((state) => state.todos.history.length > 0);
+  const redoTodo = useAppSelector((state) => state.todos.future.length > 0);
+
   return (
     <Form {...form}>
       <div>
       <div className="ml-4 flex space-x-4">
-          <Button
-            onClick={handleClearCompletedTask}
-            className="bg-red-500 text-white p-2 rounded"
-          >
-            Clear Completed Task
-          </Button>
-        </div>
+        <Button
+          onClick={handleClearCompletedTask}
+          className="bg-red-500 text-white p-2 rounded"
+        >
+          Clear Completed Task
+        </Button>
+        <Button onClick={() => dispatch(undo())} disabled={!undoTodo} className="bg-purple-400 text-white p-2 rounded">
+          Undo
+        </Button>
+        <Button onClick={() => dispatch(redo())} disabled={!redoTodo} className="bg-violet-700 text-white p-2 rounded">
+          Redo
+        </Button>
+      </div>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex items-center p-4"

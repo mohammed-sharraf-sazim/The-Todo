@@ -1,3 +1,4 @@
+import { Toaster } from '@/shared/components/ui/toaster';
 import React, { ReactNode } from 'react'
 
 interface TodoLayoutProps {
@@ -7,8 +8,9 @@ interface TodoLayoutProps {
 const TodoLayout: React.FC<TodoLayoutProps> = ({ children }) => {
   return (
     <div>
-      <div className="min-h-screen bg-gray-100 p-4">
+      <div className="min-h-screen bg-gray-300 p-4">
       {children}
+      <Toaster/>
     </div>
     </div>
   )

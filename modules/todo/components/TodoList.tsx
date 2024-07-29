@@ -74,4 +74,3 @@ const TodoList: React.FC = () => {
 };
 
 export default TodoList;
-
