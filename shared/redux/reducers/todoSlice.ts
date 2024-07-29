@@ -36,8 +36,19 @@ const todosSlice = createSlice({
       state.todos.push(action.payload);
       saveTodosToLocalStorage(state.todos);
     },
+    updateTodo: (state, action: PayloadAction<Todo>) => {
+      const index = state.todos.findIndex((todo) => todo.id === action.payload.id)
+      if (index !== -1) {
+        state.todos[index] = action.payload;
+        saveTodosToLocalStorage(state.todos);
+      }
+    },
+    deleteTodo: (state, action: PayloadAction<number>) => {
+      state.todos = state.todos.filter(todo => todo.id !== action.payload);
+      saveTodosToLocalStorage(state.todos);
+    },
   },
 });
 
-export const { addTodo } = todosSlice.actions;
+export const { addTodo, updateTodo, deleteTodo } = todosSlice.actions;
 export default todosSlice.reducer;
