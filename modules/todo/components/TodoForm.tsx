@@ -9,8 +9,9 @@ import { addTodo } from "@/shared/redux/reducers/todoSlice";
 const TodoForm: React.FC = () => {
   const [text, setText] = useState("");
   const dispatch = useAppDispatch();
+  const [error, setError] = useState<string | null>(null);
 
-  const handleAdd = (event: React.FormEvent) => {
+  const handleAddTask = (event: React.FormEvent) => {
     event.preventDefault();
     const result = TodoSchema.safeParse({
       id: Date.now(),
@@ -21,15 +22,16 @@ const TodoForm: React.FC = () => {
     });
     if (result.success) {
       dispatch(addTodo(result.data));
-      console.log(result.data);
       setText("");
+      setError(null)
     } else {
-      console.error(result.error);
+      setError(result.error.errors[0].message);
     }
   };
 
   return (
-    <form onSubmit={handleAdd} className="flex items-center p-2">
+    <div>
+    <form onSubmit={handleAddTask} className="flex items-center p-2">
       <FormItem>
         <Input
           type="text"
@@ -48,6 +50,8 @@ const TodoForm: React.FC = () => {
         </Button>
       </FormItem>
     </form>
+    {error && <div className="error-message">{error}</div>}
+    </div>
   );
 };
 

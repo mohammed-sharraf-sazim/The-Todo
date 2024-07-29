@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Todo } from "../../../modules/todo/models";
+import { Todo } from "@/modules/todo/models";
 
 interface TodosState {
   todos: Todo[];
@@ -9,7 +9,7 @@ const TODOS_LOCAL_STORAGE_KEY = "todos";
 
 const loadTodosFromLocalStorage = (): Todo[] => {
   if (typeof window === 'undefined') {
-    return []; // Handle case where localStorage is not available
+    return []; 
   }
   
   const todosJson = localStorage.getItem(TODOS_LOCAL_STORAGE_KEY);
@@ -18,7 +18,7 @@ const loadTodosFromLocalStorage = (): Todo[] => {
 
 const saveTodosToLocalStorage = (todos: Todo[]) => {
   if (typeof window === 'undefined') {
-    return; // Handle case where localStorage is not available
+    return; 
   }
   
   localStorage.setItem(TODOS_LOCAL_STORAGE_KEY, JSON.stringify(todos));
