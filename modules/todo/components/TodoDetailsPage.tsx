@@ -31,15 +31,6 @@ const TodoDetailsPage = () => {
   const [priority, setPriority] = useState<"Low" | "Medium" | "High" | "No Priority">(todo?.priority || Priority.NOT_SET);
   const [deadline, setDeadline] = useState(todo?.deadline ? new Date(todo.deadline).toISOString().split("T")[0] : "");
 
-
-  useEffect(() => {
-    if (todo) {
-      setTask(todo.task);
-      setPriority(todo.priority);
-      setDeadline(todo.deadline ? new Date(todo.deadline).toISOString().split("T")[0] : "");
-    }
-  }, [todo]);
-
   if (!todo) {
     return <div>Loading...</div>;
   }
@@ -66,6 +57,14 @@ const TodoDetailsPage = () => {
   const handleToggleCompletion = () => {
     dispatch(toggleTodoCompletion(todo.id));
   };
+
+  useEffect(() => {
+    if (todo) {
+      setTask(todo.task);
+      setPriority(todo.priority);
+      setDeadline(todo.deadline ? new Date(todo.deadline).toISOString().split("T")[0] : "");
+    }
+  }, [todo]);
 
   return (
     <div className="p-8">
