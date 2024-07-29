@@ -5,7 +5,7 @@ const endDate = new Date();
 
 export const TodoSchema = z.object({
   id: z.number(),
-  task: z.string().min(1, { message: "Task cannot be empty" }),
+  task: z.string().min(1, { message: "Task cannot be empty" }).regex(/.*\S.*/, { message: "Task cannot be only whitespace" }),
   isCompleted: z.boolean(),
   priority: z.enum(['Low', 'Medium', 'High', 'No']),
   deadline: z.date().nullable().refine(date => date === null || (date >= startDate && date <= endDate), {
