@@ -1,11 +1,13 @@
-import React from 'react'
+import TodoPageContainer from "@/modules/todo/containers/TodoPageContainer";
+import TodoLayout from "../../shared/layouts/TodoLayout/TodoLayout";
+import React from "react";
 
-const TodoPage = () => {
+const TodoPage: React.FC = () => {
   return (
-    <div>
-      <h1>Todos</h1>
-    </div>
-  )
-}
+    <TodoLayout>
+      <TodoPageContainer />
+    </TodoLayout>
+  );
+};
 
-export default TodoPage
+export default TodoPage;
