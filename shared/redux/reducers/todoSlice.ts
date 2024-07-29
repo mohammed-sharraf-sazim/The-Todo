@@ -54,8 +54,11 @@ const todosSlice = createSlice({
         saveTodosToLocalStorage(state.todos);
       }
     },
+    clearCompletedTask: (state) => {
+      state.todos = state.todos.filter((todo) => !todo.isCompleted)
+    },
   },
 });
 
-export const { addTodo, updateTodo, deleteTodo, toggleTodoCompletion } = todosSlice.actions;
+export const { addTodo, updateTodo, deleteTodo, toggleTodoCompletion, clearCompletedTask } = todosSlice.actions;
 export default todosSlice.reducer;

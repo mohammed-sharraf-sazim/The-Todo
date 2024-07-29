@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { FormItem, Form, FormField, FormMessage } from "@/shared/components/ui/form";
+import {
+  FormItem,
+  Form,
+  FormField,
+  FormMessage,
+} from "@/shared/components/ui/form";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 import { useAppDispatch } from "@/shared/redux/hooks";
@@ -7,6 +12,7 @@ import { TodoSchema } from "../models";
 import { addTodo } from "@/shared/redux/reducers/todoSlice";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { clearCompletedTask } from "@/shared/redux/reducers/todoSlice";
 
 const TodoForm: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -34,21 +40,44 @@ const TodoForm: React.FC = () => {
     }
   };
 
+  const handleClearCompletedTask = () => {
+    dispatch(clearCompletedTask());
+  };
+
   return (
-    <Form {...form} >
+    <Form {...form}>
       <div>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="flex items-center p-4">
+      <div className="ml-4 flex space-x-4">
+          <Button
+            onClick={handleClearCompletedTask}
+            className="bg-red-500 text-white p-2 rounded"
+          >
+            Clear Completed Task
+          </Button>
+        </div>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex items-center p-4"
+      >
         <FormField
           control={form.control}
           name="task"
           render={({ field }) => (
             <FormItem>
-              <Input {...field} placeholder="Add a new todo" className="flex-1 p-2 border border-gray-300 rounded" />
-              <FormMessage className="text-red-400"/>
+              <Input
+                {...field}
+                placeholder="Add a new todo"
+                className="flex-1 p-2 border border-gray-300 rounded"
+              />
+              <FormMessage className="text-red-400" />
             </FormItem>
           )}
         />
-        <Button type="submit" className="p-2 ml-4 text-white bg-blue-500 rounded">Add</Button>
+        <div className="ml-4">
+          <Button type="submit" className="p-2 text-white bg-blue-500 rounded">
+            Add
+          </Button>
+        </div>
       </form>
       {error && <div className="error-message">{error}</div>}
       </div>
