@@ -16,7 +16,11 @@ import {
   clearCompletedTask,
   undo,
   redo,
+  setStatusFilter,
+  setPriorityFilter,
+  setDueDateFilter
 } from "@/shared/redux/reducers/todoSlice";
+import TaskFilters from './TaskFilters';
 
 const TodoForm: React.FC = () => {
   const todos = useAppSelector((state) => state.todos.todos);
@@ -52,6 +56,18 @@ const TodoForm: React.FC = () => {
   const undoTodo = useAppSelector((state) => state.todos.history.length > 0);
   const redoTodo = useAppSelector((state) => state.todos.future.length > 0);
 
+  const handleStatusFilterChange = (value: 'all' | 'active' | 'completed') => {
+    dispatch(setStatusFilter(value));
+  };
+
+  const handlePriorityFilterChange = (value: 'all' | 'High' | 'Medium' | 'Low' | 'No Priority') => {
+    dispatch(setPriorityFilter(value));
+  };
+
+  const handleDueDateFilterChange = (value: 'all' | 'overdue' | 'today' | 'upcoming') => {
+    dispatch(setDueDateFilter(value));
+  };
+
   return (
     <Form {...form}>
       <div>
@@ -68,6 +84,13 @@ const TodoForm: React.FC = () => {
         <Button onClick={() => dispatch(redo())} disabled={!redoTodo} className="bg-violet-700 text-white p-2 rounded">
           Redo
         </Button>
+      </div>
+      <div className="mt-4 ml-4 flex space-x-4">
+      <TaskFilters 
+        onStatusFilterChange={handleStatusFilterChange}
+        onPriorityFilterChange={handlePriorityFilterChange}
+        onDueDateFilterChange={handleDueDateFilterChange}
+        />
       </div>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
