@@ -3,16 +3,26 @@ import { useAppSelector, useAppDispatch } from "@/shared/redux/hooks";
 import { Todo } from "../models";
 import { Checkbox } from "@/shared/components/ui/checkbox";
 import { Card, CardContent } from "@/shared/components/ui/card";
-import { toggleTodoCompletion } from "@/shared/redux/reducers/todoSlice";
+import { useGetTasksQuery, useToggleTaskCompletionMutation } from "@/shared/redux/reducers/tasksApi";
 import { filterTodos, sortTodos } from "@/shared/utils/todoUtils";
 import Link from "next/link";
 
 const TodoList: React.FC = () => {
   const [isClient, setIsClient] = useState(false);
-  const { todos, statusFilter, priorityFilter, dueDateFilter } = useAppSelector(
+  const { statusFilter, priorityFilter, dueDateFilter } = useAppSelector(
     (state) => state.todos
   );
+  const {data: todos = []} = useGetTasksQuery();
+  const [toggleTaskCompletion] = useToggleTaskCompletionMutation();
   const dispatch = useAppDispatch();
+
+  const handleToggleCompletion = async (id: string) => {
+    try {
+      await toggleTaskCompletion(id).unwrap();
+    } catch (error) {
+      console.error('Failed to toggle task completion:', error);
+    }
+  };
 
   useEffect(() => {
     setIsClient(true);
@@ -39,11 +49,10 @@ const TodoList: React.FC = () => {
       ) : (
         <div className="space-y-4">
           {sortedTodos.map((todo: Todo) => {
-            const deadline = todo.deadline ? new Date(todo.deadline) : null;
+            const deadline = todo.dueDate ? new Date(todo.dueDate) : null;
             const formattedDeadline = deadline
               ? deadline.toISOString().split("T")[0]
               : "No deadline";
-
             return (
               <Card key={todo.id}>
                 <CardContent className="flex items-center justify-between p-4">
@@ -51,7 +60,7 @@ const TodoList: React.FC = () => {
                     <Checkbox
                       id={`todo-${todo.id}`}
                       checked={todo.isCompleted}
-                      onClick={() => dispatch(toggleTodoCompletion(todo.id))}
+                      onClick={() => handleToggleCompletion(todo.id)}
                     />
                     <label
                       htmlFor={`todo-${todo.id}`}
@@ -59,7 +68,7 @@ const TodoList: React.FC = () => {
                         todo.isCompleted ? "line-through text-gray-500" : ""
                       }`}
                     >
-                      Task: {todo.task}
+                      Task: {todo.description}
                     </label>
                   </div>
                   <div>
@@ -70,7 +79,7 @@ const TodoList: React.FC = () => {
                       Deadline: {formattedDeadline}
                     </span>
                   </div>
-                  <Link href={`/todo/${todo.id}`} legacyBehavior>
+                  <Link href={`/todos/${todo.id}`} legacyBehavior>
                     <a className="text-blue-500">View Details</a>
                   </Link>
                 </CardContent>

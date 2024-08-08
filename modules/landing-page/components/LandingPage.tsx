@@ -9,7 +9,7 @@ const LandingPage: React.FC = () => {
       <p className="text-xl mb-8">
         Manage your tasks efficiently and effectively.
       </p>
-      <Link href="/todo">
+      <Link href="/todos">
         <Button className="px-6 py-3 bg-white text-blue-500 font-semibold rounded-lg shadow-md hover:bg-gray-200">
           Get Started
         </Button>

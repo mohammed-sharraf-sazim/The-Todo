@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "@/shared/redux/store";
-import { Todo, Priority } from "@/modules/todo/models";
-import { updateTodo, deleteTodo, setTodoPriority } from "@/shared/redux/reducers/todoSlice";
+import { useGetTasksByIdQuery, useUpdateTaskMutation, useDeleteTaskMutation } from "@/shared/redux/reducers/tasksApi";
+import { Button } from "@/shared/components/ui/button";
+import { Checkbox } from "@/shared/components/ui/checkbox";
+import { useToast } from "@/shared/components/ui/use-toast";
 import Link from "next/link";
 import {
   Dialog,
@@ -14,61 +14,77 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/shared/components/ui/dialog";
-import { Button } from "@/shared/components/ui/button";
-import { Checkbox } from "@/shared/components/ui/checkbox";
-import { toggleTodoCompletion } from "@/shared/redux/reducers/todoSlice";
-import { useToast } from "@/shared/components/ui/use-toast";
 
 const TodoDetailsPage = () => {
   const router = useRouter();
   const { todoId } = router.query;
-  const todos = useSelector((state: RootState) => state.todos.todos);
-  const todo = todos.find((task) => task.id === Number(todoId));
-  const dispatch = useDispatch();
-  const { toast } = useToast()
+  
+  const { data: todo, isLoading } = useGetTasksByIdQuery(todoId as string);
+  const [updateTodo] = useUpdateTaskMutation();
+  const [deleteTodo] = useDeleteTaskMutation();
+  const { toast } = useToast();
 
-  const [task, setTask] = useState(todo?.task || "");
-  const [priority, setPriority] = useState<"Low" | "Medium" | "High" | "No Priority">(todo?.priority || Priority.NOT_SET);
-  const [deadline, setDeadline] = useState(todo?.deadline ? new Date(todo.deadline).toISOString().split("T")[0] : "");
-
-  if (!todo) {
-    return <div>Loading...</div>;
-  }
-
-  const handleUpdateTask = () => {
-    if (todo) {
-      const updatedTodo: Todo = { ...todo, task, priority,  deadline: deadline ? new Date(deadline) : null };
-      dispatch(updateTodo(updatedTodo));
-
-      toast({
-        title: "Task Updated",
-        description: "Your task has been successfully updated.",
-      });
-    }
-  };
-
-  const handleDeleteTask = () => {
-    if (todo) {
-      dispatch(deleteTodo(todo.id));
-      router.push("/todo");
-    }
-  };
-
-  const handleToggleCompletion = () => {
-    dispatch(toggleTodoCompletion(todo.id));
-  };
+  const [task, setTask] = useState(todo?.description || "");
+  const [priority, setPriority] = useState<"Low" | "Medium" | "High" | "No priority">(todo?.priority || "No priority");
+  const [deadline, setDeadline] = useState(todo?.dueDate ? new Date(todo.dueDate).toISOString().split("T")[0] : "");
 
   useEffect(() => {
     if (todo) {
-      setTask(todo.task);
+      setTask(todo.description);
       setPriority(todo.priority);
-      setDeadline(todo.deadline ? new Date(todo.deadline).toISOString().split("T")[0] : "");
+      setDeadline(todo.dueDate ? new Date(todo.dueDate).toISOString().split("T")[0] : "");
     }
   }, [todo]);
 
+  const handleUpdateTask = async () => {
+    if (todo) {
+      const updatedTodo = { ...todo, description: task, priority, dueDate: deadline ? new Date(deadline) : null };
+      try {
+        await updateTodo(updatedTodo).unwrap();
+        toast({
+          title: "Task Updated",
+          description: "Your task has been successfully updated.",
+        });
+        router.push('/todos');
+      } catch (error) {
+        console.log("Failed to update the task:", error);
+      }
+    }
+  };
+
+  const handleDeleteTask = async () => {
+    if (todo) {
+      try {
+        await deleteTodo(todo.id).unwrap();
+        router.push("/todos");
+      } catch (error) {
+        console.error("Failed to delete the task:", error);
+      }
+    }
+  };
+
+  const handleToggleCompletion = async () => {
+    if (todo) {
+      const updatedTodo = { ...todo, isCompleted: !todo.isCompleted };
+      try {
+        await updateTodo(updatedTodo).unwrap();
+      } catch (error) {
+        console.error("Failed to toggle completion:", error);
+      }
+    }
+  };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!todo) {
+    return <div>Task not found.</div>;
+  }
+
   return (
     <div className="p-10">
-      <Link href="/todo" legacyBehavior>
+      <Link href="/todos" legacyBehavior>
         <a className="text-blue-500 mb-4 inline-block">Back</a>
       </Link>
       <h1 className="text-3xl font-bold mb-4">Todo Details</h1>
@@ -79,7 +95,7 @@ const TodoDetailsPage = () => {
         onChange={(e) => setTask(e.target.value)}
         className="border p-2 mb-4 w-full"
       />
-       <div className="flex items-center space-x-2 mb-4">
+      <div className="flex items-center space-x-2 mb-4">
         <label className="block text-lg font-medium text-gray-900">Task Status:</label>
         <Checkbox
           id={`todo-${todo.id}`}
@@ -94,13 +110,13 @@ const TodoDetailsPage = () => {
         <label className="block text-lg font-medium text-gray-900">Priority:</label>
         <select
           value={priority}
-          onChange={(e) => setPriority(e.target.value as "Low" | "Medium" | "High" | "No Priority")}
+          onChange={(e) => setPriority(e.target.value as "Low" | "Medium" | "High" | "No priority")}
           className="border p-2 w-full"
         >
-          <option value={Priority.NOT_SET}>No Priority</option>
-          <option value={Priority.LOW}>Low</option>
-          <option value={Priority.MEDIUM}>Medium</option>
-          <option value={Priority.HIGH}>High</option>
+          <option value="No priority">No priority</option>
+          <option value="Low">Low</option>
+          <option value="Medium">Medium</option>
+          <option value="High">High</option>
         </select>
       </div>
       <div className="mb-4">
@@ -108,7 +124,7 @@ const TodoDetailsPage = () => {
         <input
           type="date"
           value={deadline}
-          onChange={(e) => setDeadline(e.target.value )}
+          onChange={(e) => setDeadline(e.target.value)}
           className="border p-2 w-full"
         />
       </div>
