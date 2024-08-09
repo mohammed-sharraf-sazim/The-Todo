@@ -15,7 +15,6 @@ export const tasksApi = createApi({
     }),
     getTasksById: builder.query<Todo, string>({
       query: (id) => `todos/${id}`,
-      providesTags: (result, error, id) => [{ type: 'Todos', id }],
     }),
     addTask: builder.mutation<Todo, Partial<Todo>>({
       query: (newTask) => ({
@@ -33,7 +32,7 @@ export const tasksApi = createApi({
       }),
       invalidatesTags: ["Todos"],
     }),
-    deleteTask: builder.mutation<{ success: boolean; id: number }, number>({
+    deleteTask: builder.mutation<{ success: boolean; id: string }, string>({
       query: (id) => ({
         url: `/todos/${id}`,
         method: "DELETE",

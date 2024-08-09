@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { useGetTasksByIdQuery, useUpdateTaskMutation, useDeleteTaskMutation } from "@/shared/redux/reducers/tasksApi";
+import { useGetTasksByIdQuery, useUpdateTaskMutation, useDeleteTaskMutation, useToggleTaskCompletionMutation } from "@/shared/redux/reducers/tasksApi";
 import { Button } from "@/shared/components/ui/button";
 import { Checkbox } from "@/shared/components/ui/checkbox";
 import { useToast } from "@/shared/components/ui/use-toast";
@@ -25,6 +25,7 @@ const TodoDetailsPage = () => {
   const { toast } = useToast();
 
   const [task, setTask] = useState(todo?.description || "");
+  const [error, setError] = useState<string | null>(null)
   const [priority, setPriority] = useState<"Low" | "Medium" | "High" | "No priority">(todo?.priority || "No priority");
   const [deadline, setDeadline] = useState(todo?.dueDate ? new Date(todo.dueDate).toISOString().split("T")[0] : "");
 
@@ -46,8 +47,8 @@ const TodoDetailsPage = () => {
           description: "Your task has been successfully updated.",
         });
         router.push('/todos');
-      } catch (error) {
-        console.log("Failed to update the task:", error);
+      } catch {
+        setError("Failed to update the task");
       }
     }
   };
@@ -58,18 +59,7 @@ const TodoDetailsPage = () => {
         await deleteTodo(todo.id).unwrap();
         router.push("/todos");
       } catch (error) {
-        console.error("Failed to delete the task:", error);
-      }
-    }
-  };
-
-  const handleToggleCompletion = async () => {
-    if (todo) {
-      const updatedTodo = { ...todo, isCompleted: !todo.isCompleted };
-      try {
-        await updateTodo(updatedTodo).unwrap();
-      } catch (error) {
-        console.error("Failed to toggle completion:", error);
+        setError("Failed to delete the task");
       }
     }
   };
@@ -97,11 +87,6 @@ const TodoDetailsPage = () => {
       />
       <div className="flex items-center space-x-2 mb-4">
         <label className="block text-lg font-medium text-gray-900">Task Status:</label>
-        <Checkbox
-          id={`todo-${todo.id}`}
-          checked={todo.isCompleted}
-          onCheckedChange={handleToggleCompletion}
-        />
         <span className={todo.isCompleted ? ' text-gray-500' : ''}>
           {todo.isCompleted ? "Completed" : "Not Completed"}
         </span>

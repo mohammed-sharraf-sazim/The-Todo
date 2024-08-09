@@ -9,6 +9,7 @@ import Link from "next/link";
 
 const TodoList: React.FC = () => {
   const [isClient, setIsClient] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { statusFilter, priorityFilter, dueDateFilter } = useAppSelector(
     (state) => state.todos
   );
@@ -18,9 +19,10 @@ const TodoList: React.FC = () => {
 
   const handleToggleCompletion = async (id: string) => {
     try {
-      await toggleTaskCompletion(id).unwrap();
-    } catch (error) {
-      console.error('Failed to toggle task completion:', error);
+        await toggleTaskCompletion(id).unwrap();
+        setError(null)
+    } catch  {
+      setError('Failed to toggle task completion');
     }
   };
 

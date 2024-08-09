@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React, { useState } from "react";
 import {
   FormItem,
@@ -14,7 +13,6 @@ import { useAddTaskMutation, useClearCompletedTasksMutation, useUpdateTaskMutati
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  // clearCompletedTask,
   undo,
   redo,
   setStatusFilter,
@@ -36,7 +34,6 @@ const TodoForm: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [addTodo] = useAddTaskMutation();
   const [clearCompletedTask] = useClearCompletedTasksMutation();
-  const [updateTask] = useUpdateTaskMutation();
   const todos = useAppSelector((state) => state.todos.todos);
 
   const form = useForm<FormValues>({
@@ -70,45 +67,13 @@ const TodoForm: React.FC = () => {
   const handleClearCompleted = async () => {
     try {
       await clearCompletedTask().unwrap();
-    } catch (error) {
-      console.error('Failed to clear completed tasks:', error);
+    } catch {
+      setError('Failed to clear completed tasks');
     }
   };
 
-  const syncTodosWithBackend = async (todos: Todo[]) => {
-    try {
-      await Promise.all(
-        todos.map((todo) =>
-          updateTask({
-            ...todo,
-          }).unwrap()
-        )
-      );
-    } catch (error) {
-      console.error("Failed to sync todos with backend:", error);
-    }
-  };
-
-  const handleUndo = async () => {
-    dispatch(undo());
-    const currentTodos = [...todos];
-    console.log('Todos before saving to localStorage:', todos);
-    saveStateToLocalStorage(TODOS_LOCAL_STORAGE_KEY, currentTodos);
-    await syncTodosWithBackend(currentTodos);
-  };
-
-  const handleRedo = async () => {
-    dispatch(redo());
-    const currentTodos = [...todos];
-    saveStateToLocalStorage(TODOS_LOCAL_STORAGE_KEY, currentTodos);
-    await syncTodosWithBackend(currentTodos);
-  };
-
-
-  // const undoTodo = useAppSelector((state) => state.todos.history.length > 0);
-  // const redoTodo = useAppSelector((state) => state.todos.future.length > 0);
-
-
+  const undoTodo = useAppSelector((state) => state.todos.history.length > 0);
+  const redoTodo = useAppSelector((state) => state.todos.future.length > 0);
 
   const handleStatusFilterChange = (value: "all" | "active" | "completed") => {
     dispatch(setStatusFilter(value));
@@ -137,17 +102,15 @@ const TodoForm: React.FC = () => {
             Clear Completed Task
           </Button>
           <Button
-            // onClick={() => dispatch(undo())}
-            // disabled={!undoTodo}
-            onClick={handleUndo}
+            onClick={() => dispatch(undo())}
+            disabled={!undoTodo}
             className="bg-purple-400 text-white p-2 rounded"
           >
             Undo
           </Button>
           <Button
-            // onClick={() => dispatch(redo())}
-            // disabled={!redoTodo}
-            onClick={handleRedo}
+            onClick={() => dispatch(redo())}
+            disabled={!redoTodo}
             className="bg-violet-700 text-white p-2 rounded"
           >
             Redo
