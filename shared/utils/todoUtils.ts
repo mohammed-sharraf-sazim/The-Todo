@@ -23,10 +23,10 @@ export const filterTodos = (
       priorityFilter === "all" || todo.priority === priorityFilter;
 
     let dueDateMatch = true;
-    if (dueDateFilter !== "all" && todo.deadline) {
+    if (dueDateFilter !== "all" && todo.dueDate) {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-      const deadline = new Date(todo.deadline);
+      const deadline = new Date(todo.dueDate);
       deadline.setHours(0, 0, 0, 0);
       if (dueDateFilter === "overdue") {
         dueDateMatch = deadline < today;

@@ -34,7 +34,7 @@ const TaskFilters: React.FC<TaskFiltersProps> = ({
           <SelectItem value="High">High</SelectItem>
           <SelectItem value="Medium">Medium</SelectItem>
           <SelectItem value="Low">Low</SelectItem>
-          <SelectItem value="No Priority">No Priority</SelectItem>
+          <SelectItem value="No priority">No Priority</SelectItem>
         </SelectContent>
       </Select>
 
